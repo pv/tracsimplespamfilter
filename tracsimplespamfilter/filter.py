@@ -36,7 +36,7 @@ class RejectContent(TracError):
     """Exception raised when content is rejected by a filter."""
 
 class TracSimpleSpamFilterPlugin(Component):
-    implements(ITicketManipulator, IWikiPageManipulator, IAttachmentManipulator)
+    implements(ITicketManipulator)#, IWikiPageManipulator, IAttachmentManipulator)
 
     regex = Option('tracsimplespamfilter', 'regex', '',
                    doc="Spam-forbidding regular expressions")
@@ -91,55 +91,55 @@ class TracSimpleSpamFilterPlugin(Component):
 
         return []
 
-    # IWikiPageManipulator methods
-
-    def prepare_wiki_page(self, req, page, fields):
-        pass
-
-    def validate_wiki_page(self, req, page):
-        if self._check_allow(req, 'WIKI_ADMIN'):
-            # An administrator is allowed to spam
-            return []
-
-        text = page.text
-        comment = req.args.get('comment')
-
-        # Test the actual page changes as well as the comment
-        changes = [text]
-        if comment:
-            changes += [comment]
-
-        self.check(changes)
-
-        return []
-
-    # IAttachmentManipulator methods
-
-    def prepare_attachment(self, req, attachment, fields):
-        pass
-
-    def validate_attachment(self, req, attachment):
-        if self._check_allow(req, 'WIKI_ADMIN'):
-            # An administrator is allowed to spam
-            return []
-
-        author = req.args.get('author', req.authname)
-        description = req.args.get('description')
-
-        filename = None
-        upload = req.args.get('attachment')
-        content = ''
-        if upload is not None:
-            try:
-                data = upload.file.read(self.sample_size)
-                if not is_binary(data):
-                    content = to_unicode(data)
-            finally:
-                upload.file.seek(0)
-            filename = upload.filename
-
-        changes = [x for x in (description, filename, content) if x]
-
-        self.check(changes)
-
-        return []
+#    # IWikiPageManipulator methods
+#
+#    def prepare_wiki_page(self, req, page, fields):
+#        pass
+#
+#    def validate_wiki_page(self, req, page):
+#        if self._check_allow(req, 'WIKI_ADMIN'):
+#            # An administrator is allowed to spam
+#            return []
+#
+#        text = page.text
+#        comment = req.args.get('comment')
+#
+#        # Test the actual page changes as well as the comment
+#        changes = [text]
+#        if comment:
+#            changes += [comment]
+#
+#        self.check(changes)
+#
+#        return []
+#
+#    # IAttachmentManipulator methods
+#
+#    def prepare_attachment(self, req, attachment, fields):
+#        pass
+#
+#    def validate_attachment(self, req, attachment):
+#        if self._check_allow(req, 'WIKI_ADMIN'):
+#            # An administrator is allowed to spam
+#            return []
+#
+#        author = req.args.get('author', req.authname)
+#        description = req.args.get('description')
+#
+#        filename = None
+#        upload = req.args.get('attachment')
+#        content = ''
+#        if upload is not None:
+#            try:
+#                data = upload.file.read(self.sample_size)
+#                if not is_binary(data):
+#                    content = to_unicode(data)
+#            finally:
+#                upload.file.seek(0)
+#            filename = upload.filename
+#
+#        changes = [x for x in (description, filename, content) if x]
+#
+#        self.check(changes)
+#
+#        return []
