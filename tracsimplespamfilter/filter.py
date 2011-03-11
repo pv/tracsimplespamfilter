@@ -46,7 +46,7 @@ class TracSimpleSpamFilterPlugin(Component):
     sample_size = 65536
 
     def __init__(self):
-        self.regexps = [re.compile(x) for x in self.regex.split(';')]
+        self.regexps = [re.compile(x, re.S|re.U) for x in self.regex.split(';')]
 
     def _check_allow(self, req, extra):
         if self.allow:
@@ -56,8 +56,9 @@ class TracSimpleSpamFilterPlugin(Component):
         return req.perm.has_permission(extra)
 
     def check(self, changes):
+        changes = u"".join(changes)
         for expr in self.regexps:
-            m = expr.match(changes)
+            m = expr.search(changes)
             if m:
                 raise RejectContent("Content rejected")
 
