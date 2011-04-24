@@ -4,7 +4,7 @@ tracsimplespamfilter
 
 Utterly simplistic spam filter that rejects content based on regexps.
 
-Watches over ticket and wiki edits.
+Watches over ticket edits.
 
 Configuration
 ============
